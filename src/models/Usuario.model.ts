@@ -1,5 +1,9 @@
-import mongoose from "mongoose";
-const { Schema, model } = mongoose;
+import { Schema, model, Model, Document } from "mongoose";
+
+export enum UsuarioRole {
+  user = "USER_ROLE",
+  admin = "ADMIN_ROLE",
+}
 
 const UsuarioSchema = new Schema({
   nombre: {
@@ -21,7 +25,7 @@ const UsuarioSchema = new Schema({
   role: {
     type: String,
     required: true,
-    default: "USER_ROLE",
+    default: UsuarioRole.admin,
   },
   google: {
     type: Boolean,
@@ -30,11 +34,22 @@ const UsuarioSchema = new Schema({
 });
 
 UsuarioSchema.method("toJSON", function () {
-  const { __v, _id, ...obj } = this.toObject();
+  const { __v, _id, password, ...obj } = this.toObject();
 
   obj.id = _id;
 
   return obj;
 });
 
-export default model("Usuario", UsuarioSchema);
+export interface UsuarioDocument extends Document {
+  nombre: string;
+  email: string;
+  password: string;
+  img?: string;
+  role: UsuarioRole;
+  google: boolean;
+}
+
+export interface UsuarioModel extends Model<UsuarioDocument> {}
+
+export default model<UsuarioDocument, UsuarioModel>("Usuario", UsuarioSchema);

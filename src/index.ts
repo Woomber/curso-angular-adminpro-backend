@@ -2,7 +2,7 @@ import "dotenv/config";
 import express from "express";
 import { connect } from "./db/config";
 import cors from "cors";
-import Routes from "./routes";
+import * as Routes from "./routes";
 
 const app = express();
 app.use(cors());
@@ -14,6 +14,7 @@ connect();
 
 // Rutas
 app.use("/api/usuarios", Routes.usuarios);
+app.use("/api/auth", Routes.auth);
 
 const port = process.env.port || 3000;
 app.listen(port, () => {
