@@ -2,12 +2,19 @@ import { Request, Response } from "express";
 import { Usuario } from "../models";
 import bcrypt from "bcryptjs";
 import { generarToken } from "../helpers/jwt";
+import { serverError } from "../helpers/Errors";
 
 export const getUsuarios = async (req: Request, res: Response) => {
-  const usuarios = await Usuario.find({}, "nombre email role google");
+  const offset = Number(req.query.offset) || 0;
+
+  const [usuarios, total] = await Promise.all([
+    Usuario.find({}, "nombre email role google img").skip(offset).limit(5),
+    Usuario.countDocuments({}),
+  ]);
 
   res.status(200).json({
     usuarios,
+    total,
   });
 };
 
@@ -40,10 +47,7 @@ export const createUsuario = async (req: Request, res: Response) => {
       token,
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      message: "Error del servidor",
-    });
+    serverError(res, error);
   }
 };
 
@@ -81,10 +85,7 @@ export const updateUsuario = async (req: Request, res: Response) => {
 
     res.status(200).json(newData);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      message: "Error del servidor",
-    });
+    serverError(res, error);
   }
 };
 
@@ -104,9 +105,6 @@ export const deleteUsuario = async (req: Request, res: Response) => {
 
     res.status(200).json();
   } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      message: "Error del servidor",
-    });
+    serverError(res, error);
   }
 };

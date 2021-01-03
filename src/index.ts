@@ -13,8 +13,12 @@ app.use(express.json());
 connect();
 
 // Rutas
-app.use("/api/usuarios", Routes.usuarios);
 app.use("/api/auth", Routes.auth);
+app.use("/api/buscar", Routes.buscar);
+app.use("/api/upload", Routes.uploads);
+app.use("/api/usuarios", Routes.usuarios);
+app.use("/api/hospitales", Routes.hospitales);
+app.use("/api/medicos", Routes.medicos);
 
 const port = process.env.port || 3000;
 app.listen(port, () => {

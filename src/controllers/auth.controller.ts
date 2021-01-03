@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { Usuario } from "../models";
 import bcrypt from "bcryptjs";
 import { generarToken } from "../helpers/jwt";
+import { serverError } from "../helpers/Errors";
 
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
@@ -31,9 +32,6 @@ export const login = async (req: Request, res: Response) => {
       token,
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      message: "Error del servidor",
-    });
+    serverError(res, error);
   }
 };
